@@ -2,12 +2,16 @@
 
 int main() {
     const auto size = 10;
-    int* dynamicArray = new int[size];
-    for (int i = 0; i <= size; ++i)
+    //int* dynamicArray = new int[size];
+    int dynamicArray[size];
+    for (int i = 0; i <= size; ++i) {
         *(dynamicArray + i) = i * 10;
+    }
 
-    for (int i = 0; i <= size; ++i)
-        std::cout << dynamicArray[i] << '\n';
+    std::cout << size << std::endl;
 
-    delete[] dynamicArray;
+    //for (int i = 0; i <= size; ++i)
+        //std::cout << i << " " << dynamicArray[i] << "; ";
+
+    //delete[] dynamicArray;
 }

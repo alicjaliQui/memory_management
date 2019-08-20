@@ -1,5 +1,6 @@
 #include <iostream>
 #include <stdexcept>
+#include <memory>
 
 using namespace std;
 
@@ -14,6 +15,7 @@ public:
             throw logic_error("Passed d. d is prohibited.");
         }
     };
+
 };
 
 int main(int argc, char* argv[])
@@ -24,17 +26,26 @@ int main(int argc, char* argv[])
         exit(-1);
     }
     const char* N = argv[1];
-    Resource* rsc = nullptr;
+    // 1)
+    //Resource* rsc = nullptr;
+    // 3)
+    std::unique_ptr<Resource> rsc;
     try
     {
-        rsc = new Resource();
+        // 2)
+        //std::unique_ptr<Resource> rsc = make_unique<Resource>();
+        // 3)
+        rsc.reset(new Resource());
+
         rsc->use(N);
-        delete rsc;
     }
     catch (logic_error & e)
     {
         cout << e.what() << endl;
+        // 1)
+        //delete rsc;
     }
+
     return 0;
 }
 
