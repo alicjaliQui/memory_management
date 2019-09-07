@@ -9,6 +9,10 @@ public:
         next(nullptr),
         value(v)
     {}
+    ~Node()
+    {
+        delete next;
+    }
 
     Node* next;
     int value;
@@ -18,6 +22,7 @@ class List
 {
 public:
     List();
+    ~List();
     void add(Node* node);
     Node* get(const int value);
 
@@ -28,6 +33,11 @@ private:
 List::List() :
     first(nullptr)
 {}
+
+List::~List()
+{
+    delete first;
+}
 
 void List::add(Node* node)
 {
