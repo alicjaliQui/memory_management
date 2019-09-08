@@ -1,4 +1,6 @@
 #include <iostream>
+#include <memory>
+#include <assert.h>
 
 using namespace std;
 
@@ -9,12 +11,12 @@ public:
         next(nullptr),
         value(v)
     {}
-    ~Node()
-    {
-        delete next;
+    Node(Node &other){
+        next = move(other.next);
+        value = other.value;
     }
 
-    Node* next;
+    unique_ptr<Node> next;
     int value;
 };
 
@@ -22,61 +24,56 @@ class List
 {
 public:
     List();
-    ~List();
-    void add(Node* node);
-    Node* get(const int value);
+    void add(unique_ptr<Node> node);
+    unique_ptr<Node> get(const int value);
+    void print();
 
 private:
-    Node* first;
+    unique_ptr<Node> first;
 };
 
 List::List() :
     first(nullptr)
 {}
 
-List::~List()
+void List::add(unique_ptr<Node> node)
 {
-    delete first;
-}
-
-void List::add(Node* node)
-{
-    if(!first)
+    if(first == nullptr)
     {
-        first = node;
+        first = move(node);
     }
     else
     {
-        Node* current = first;
+        Node * current = first.get();
         while(current->next)
         {
-            current = current->next;
+            current = current->next.get();
         }
-        current->next = node;
+        current->next = move(node);
     }
 }
 
-Node* List::get(const int value)
+unique_ptr<Node> List::get(const int value)
 {
-    if(!first)
+    if(first == nullptr)
     {
         cout << "List is empty!" << endl;
         return nullptr;
     }
     else
     {
-        Node* current = first;
+        Node * current = first.get();
         do
         {
             if(current->value == value)
             {
                 cout << "Found value " << current->value << endl;
-                return current;
+                return make_unique<Node>(*current);
             }
             else
             {
                 cout << "Going through " << current->value << endl;
-                current = current->next;
+                current = current->next.get();
             }
         } while(current);
         cout << "Not found: value " << value << endl;
@@ -84,16 +81,30 @@ Node* List::get(const int value)
     }
 }
 
+void List::print(void)
+{
+    cout << __func__ << ": " << endl;
+    Node * current = first.get();
+    while(current)
+    {
+        cout << "ptr: " << current << ", value: " << current->value << endl;
+        current = current->next.get();
+    }
+}
+
 int main()
 {
-    List lista;
-    Node* node4 = new Node(4);
-    Node* node7 = new Node(7);
+    auto node4 = make_unique<Node>(4);
+    auto node5 = make_unique<Node>(5);
+    auto node6 = make_unique<Node>(6);
+    auto node7 = make_unique<Node>(7);
 
-    lista.add(node4);
-    lista.add(new Node(2));
-    lista.add(node7);
-    lista.add(new Node(9));
+    List lista;
+    lista.add(move(node4));
+    lista.add(move(node5));
+    lista.add(move(node6));
+    lista.add(move(node7));
+    lista.print();
     auto node = lista.get(1);
 
     if (node)
