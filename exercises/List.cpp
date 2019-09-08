@@ -38,6 +38,8 @@ List::List() :
 
 void List::add(unique_ptr<Node> node)
 {
+    assert(get(node->value) == nullptr);
+
     if(first == nullptr)
     {
         first = move(node);
@@ -45,6 +47,7 @@ void List::add(unique_ptr<Node> node)
     else
     {
         Node * current = first.get();
+
         while(current->next)
         {
             current = current->next.get();
@@ -94,18 +97,15 @@ void List::print(void)
 
 int main()
 {
-    auto node4 = make_unique<Node>(4);
-    auto node5 = make_unique<Node>(5);
-    auto node6 = make_unique<Node>(6);
-    auto node7 = make_unique<Node>(7);
-
     List lista;
-    lista.add(move(node4));
-    lista.add(move(node5));
-    lista.add(move(node6));
-    lista.add(move(node7));
+    lista.add(make_unique<Node>(4));
+    lista.add(make_unique<Node>(5));
+    lista.add(make_unique<Node>(6));
+    lista.add(make_unique<Node>(7));
+
     lista.print();
-    auto node = lista.get(1);
+
+    auto node = lista.get(6);
 
     if (node)
         cout << node->value << '\n';
